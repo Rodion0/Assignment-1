@@ -7,7 +7,7 @@
 // Assistance: I reviewed some code previously written for another course 
 //--------------------------------------------------------------------
 #include <iostream>
-#include <cstlib>
+#include <cstdlib>
 using namespace std; 
 
 
@@ -79,7 +79,7 @@ void printTrains(){
 
 //Generate Random Number within bounds
 int generateRandomNumber(){
-    
+     
 }
 
 
