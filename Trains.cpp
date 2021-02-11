@@ -71,7 +71,10 @@ train * train::makeTrain(int numberofCars){ //Make Train when given number of ca
         for(int i = 2; i < numberofCars; i++){
             car * filler; 
             filler->data = i * i;
+            answer->rear = filler;
+            
         }
+        return answer;
     }            
 
 }
