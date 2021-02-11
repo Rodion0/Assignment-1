@@ -121,3 +121,15 @@ void printTrains(train * trains[], int length){
 }
 
 
+
+
+
+
+int main(int argc, char const *argv[])
+{
+    
+    return 0;
+}
+
+
+
