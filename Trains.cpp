@@ -41,9 +41,9 @@ public:
     car * front; 
     car * rear;
     train * makeTrain(int numberofCars);
-    bool isEmptyTrain(train * input);
-    void insertFront(car * n); 
-    void insertRear(car * n); 
+    //bool isEmptyTrain(train * input);
+    void insertFront(int n); 
+    void insertRear(int n); 
     void deleteFront();
     void deleteRear();
     int valueofTrain();
@@ -79,12 +79,14 @@ train * train::makeTrain(int numberofCars){ //Make Train when given number of ca
 
 }
 
-bool train::isEmptyTrain(train * input){
+/*bool train::isEmptyTrain(train * input){
     return(input->front == input->rear);
+}*/
+
+void train::insertFront(int n){
 }
 
-void train::insertFront(car * n){
-
+void train::insertRear(int n){
 
 }
 
@@ -153,6 +155,7 @@ int main(int argc, char const *argv[])
     train * train_station[numberofTrains];
     
     cin >> big_random;
+    //Loop to FIll up Trains with Cars 
     //Fill up the Train Station
     for(int i = 0; i < numberofTrains; i++){
         car * temp;
@@ -164,6 +167,7 @@ int main(int argc, char const *argv[])
             temp = temp->next;
         }
     }
+    //For Loop to do switiching/printing 
 
     return 0;
 }
