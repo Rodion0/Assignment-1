@@ -44,8 +44,8 @@ public:
     //bool isEmptyTrain(train * input);
     void insertFront(int n); 
     void insertRear(int n); 
-    void deleteFront();
-    void deleteRear();
+    int deleteFront();
+    int deleteRear();
     int valueofTrain();
     //void printTrains(train * input);
 };
@@ -61,7 +61,7 @@ train * train::makeTrain(int numberofCars){ //Make Train when given number of ca
         temp ->data = 1; 
         answer->front = temp; 
         answer->rear = temp;
-        return answer
+        return answer;
     }
     else{
         car * first; 
@@ -90,11 +90,11 @@ void train::insertRear(int n){
 
 }
 
-void train::deleteFront(){
+int train::deleteFront(){
 
 }
 
-void train::deleteRear(){
+int train::deleteRear(){
 
 }
 
@@ -137,10 +137,16 @@ int diceRoll(int mode, int range, int random_number){
 }
 
 void printTrains(train * trains[], int length){
-    for(int i = 0; i < length; i++){
-        int train_counter = 1;
-        cout << "train " << train_counter << " value: " << trains[i]->valueofTrain() <<endl;
-    }
+    for (int i = 1; i <= length; i++){ 
+            if(trains[i-1]->valueofTrain() == 0){
+                for(int j = i; j <= length; j++){
+                     cout << "train " << i << " : value " << trains[j-1]->valueofTrain() <<endl;
+                }
+                cout << "Simulation is over; train " << i << " has no cars left." <<endl;
+                break;
+            }
+            cout << "train " << i << " : value " << trains[i-1]->valueofTrain() <<endl;
+        }
 }
 
 
@@ -152,6 +158,7 @@ int main(int argc, char const *argv[])
 {
     int big_random; 
     int numberofTrains = stoi(argv[1]), turns = stoi(argv[2]), numberofCars = stoi(argv[3]);
+    int sending, receiving, positon;
     train * train_station[numberofTrains];
     
     cin >> big_random;
@@ -168,6 +175,22 @@ int main(int argc, char const *argv[])
         }
     }
     //For Loop to do switiching/printing 
+    for(int i = 1; i <= turns; i++){
+
+        if(positon == 1){
+        cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << " , from front"  << endl;
+            int deleted
+        }
+        if(positon == 2){
+        cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << " , from front"  << endl;
+        }
+        
+        
+        //Print them Trains 
+        printTrains(train_station,numberofTrains);
+              
+        cin >> big_random;
+    }
 
     return 0;
 }
