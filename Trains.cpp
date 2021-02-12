@@ -56,15 +56,14 @@ train * train::makeTrain(int numberofCars){ //Make Train when given number of ca
         return answer;
     }
     else{
-        car * first; 
-        answer->front = first; 
-        answer->rear = first;
+        car * first;
         first->data = 1; 
+        answer->front = first; 
+        answer->rear = first; 
         for(int i = 2; i < numberofCars; i++){
             car * filler; 
             filler->data = i * i;
             answer->rear = filler;
-            
         }
         return answer;
     }            
@@ -75,31 +74,31 @@ void train::insertFront(int n){
     car * cars; 
     cars->data = n;
     cars->next = NULL;
-    cars->prev = this->front->next; 
-    this->front->next = cars;
-    this->front = cars;  
+    cars->prev = front->next; 
+    front->next = cars;
+    front = cars;  
 }
 
 int train::deleteFront(){
-    if(this->front == this->rear){
+    if(front == rear){
         return -1;
     } 
-    car * rip = this->front->next;
-    this->front->next = rip->next; 
-    if(this->front->next == NULL){
-        this->rear = this->front;
+    car * rip = front->next;
+    front->next = rip->next; 
+    if(front->next == NULL){
+        rear = front;
     } 
     return rip->data; 
 }
 
 int train::deleteRear(){
-    if(this->front == this->rear){
+    if(front == rear){
         return -1;
     } 
-    car * rip = this->rear->prev;
-    this->rear->prev = rip->prev; 
-    if(this->front->next == NULL){
-        this->rear = this->front;
+    car * rip = rear->prev;
+    rear->prev = rip->prev; 
+    if(front->next == NULL){
+        rear = front;
     } 
     return rip->data;
 }
@@ -159,16 +158,20 @@ int main(int argc, char const *argv[])
     int numberofTrains = stoi(argv[1]), turns = stoi(argv[2]), numberofCars = stoi(argv[3]);
     int sending, receiving, positon;
     train * train_station[numberofTrains];
-    
+    cout << numberofTrains << " number of turns: " << turns << " number of cars: " << numberofCars <<endl; 
     cin >> big_random;
+
+    cout << big_random; 
 
     //Loop to fill up Trains with Cars 
     for (int i = 0; i < numberofTrains; i++){
+        cout << "Hello There" <<endl; 
         train_station[i]->makeTrain(numberofCars);
+        cout << "I am filling up the trains " << i << endl; 
     }
     
     //Fill up the Train Station
-    for(int i = 0; i < numberofTrains; i++){
+    /* for(int i = 0; i < numberofTrains; i++){
         car * temp;
         temp = train_station[i]->front;
         int j = 1; 
@@ -177,7 +180,8 @@ int main(int argc, char const *argv[])
             j+=1;
             temp = temp->next;
         }
-    }
+        cout << "I have filled the train station" << endl; 
+    } */
 
     //For Loop to do switching/printing 
     for(int i = 1; i <= turns; i++){
@@ -188,16 +192,19 @@ int main(int argc, char const *argv[])
             cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << " , from front"  << endl;
             int deleted = train_station[sending]->deleteFront();
             train_station[receiving]->insertFront(deleted);  
+            cout << "I am deleting from the front" <<endl; 
         }
         if(positon == 2){
             cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << " , from rear"  << endl;
             int deleted = train_station[sending]->deleteRear();
             train_station[receiving]->insertFront(deleted);
+            cout << "I am deleting from the rear" << endl; 
         }
          
         printTrains(train_station,numberofTrains);
 
         cin >> big_random;
+        cout << " I have done a turn" <<endl; 
     }
 
     return 0;
