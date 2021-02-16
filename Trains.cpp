@@ -6,6 +6,10 @@
 // Description: Train Switching Simulation  
 // Assistance: I reviewed some code previously written for another course and class notes
 //--------------------------------------------------------------------
+
+//TODO: FIX DELETE METHODS 
+// FIX PRINTING 
+// ADD BOUNDRY CASES
 #include <iostream>
 using namespace std; 
 
@@ -24,96 +28,97 @@ public:
 car::car()
 {
     data = 0; 
-    next = NULL; 
+    next = NULL;
     prev = NULL; 
 }
-
 
 
 // Methods for Doubly Linked List/Train  
 class train
 {
 public:
-    //car * front; 
-    //car * rear;  
+    car * front; 
+    car * rear;  
     car * dummy; 
+    train();
     train * makeTrain(int numberofCars);
-    void insertFront(int n);  
-    void insertRear(int n);
+    void insertFront(int value);  
+    void insertRear(int value);
     int deleteFront();
     int deleteRear();
     int valueofTrain();
 };
 
-
-void train::insertFront(int n){
-    car * carro = new car();
-    carro->data = n;  
-    car * after = dummy->next;
-    carro->next = after->prev;
-    carro->prev = dummy->next; 
-    dummy->next = carro; 
-    after->prev = carro;  
+train::train(){
+    dummy = new car();
+    front = rear = dummy;
 }
 
-void train::insertRear(int n){
-    car * carro = new car();
-    carro->data = n;  
-    car * before = dummy->prev;
-    carro->next = dummy->prev;
-    carro->prev = before->next; 
-    dummy->prev = carro; 
-    before->next = carro;          
+void train::insertFront(int value){ //Problem is that dummy isnt pointing to anything but idk how to make point to something 
+    car * carro = new car(); 
+    if(front == rear){
+        front = rear = carro; 
+    }
+    else{
+        carro->data = value;
+        carro->prev = rear;
+        front->next = carro; 
+        rear = carro;
+    } 
 }
 
-int train::deleteFront(){
-    if(dummy->next == dummy->prev){
+void train::insertRear(int value){
+    car * carro = new car();   
+    if(front == rear){
+        front = rear = carro; 
+    }
+    else{
+        carro->data = value;
+        carro->prev = rear;
+        front->next = carro; 
+        rear = carro;
+    }
+}
+
+int train::deleteFront(){ 
+    if(front == rear){
         return -1;
     } 
-    car * rip = dummy->next;
-    dummy->next = rip->next; 
-    if(dummy->next == NULL){
-       dummy->next = dummy-> prev = dummy;
-        return -1; 
-    } 
+    car * rip = front->next;
+    front->next = rip->next;
     return rip->data; 
 }
 
 int train::deleteRear(){
-    if(dummy->next == dummy->prev){
+    if(front == rear){
         return -1;
     } 
-    car * rip = dummy->prev;
-    dummy->prev = rip->prev; 
-    if(dummy->next == NULL){
-       dummy->next = dummy-> prev = dummy;
-        return -1; 
-    } 
-    return rip->data;
+    car * rip = rear->prev;
+    rear->prev = rip->prev;
+    return rip->data; 
 }
 
 int train::valueofTrain(){
     car * temp = new car;
-    temp = dummy->next;
+    temp = front;
     int value = 1;
     int counter = 1;
-    while(temp != dummy){
+    while(temp != NULL){
         value = (temp->data * counter) + value;
-        counter += 1;
+        counter = counter + 1;
         temp = temp->next; 
     }
     return value;
 }
 
 train * train::makeTrain(int numberofCars){ //Make Train when given number of cars
-    train * answer = new train;   
-    answer->dummy->next = answer->dummy->prev = dummy;
+    train * answer = new train();  
     if(numberofCars == 0){ //return dummy node 
         return answer; 
     }
     else{
         for (int i = 1; i <= numberofCars; i++){
-            answer->insertRear(i*i);
+            answer->insertRear(i);
         }
         return answer;
     }            
@@ -168,37 +173,20 @@ int main(int argc, char const *argv[])
 
     //Loop to fill up Trains with Cars 
     for (int i = 0; i < numberofTrains; i++){
-        cout << "Hello There" <<endl; 
+        train_station[i] = new train(); 
         train_station[i]->makeTrain(numberofCars); 
-        cout << "I am filling up the trains " << i << endl; 
     }
-    
-    //Fill up the Train Station
-    /* for(int i = 0; i < numberofTrains; i++){
-        car * temp;
-        temp = train_station[i]->front;
-        int j = 1; 
-        while(temp != train_station[i]->rear){
-            temp->data = j * j; 
-            j+=1;
-            temp = temp->next;
-        }
-        cout << "I have filled the train station" << endl; 
-    } */
 
     //For Loop to do switching/printing 
     for(int i = 1; i <= turns; i++){
         positon = (big_random % 2) + 1;
         sending = (big_random % numberofTrains) + 1; 
         receiving = (big_random % numberofTrains) + 1; 
-        if(sending == receiving){
-            printTrains(train_station,numberofTrains);
-            cin >> big_random;
-            continue; 
-        }
+        cout << "Position is " << positon << " Sending is " << sending << " Receving is " << receiving <<endl; 
         if(positon == 1){
             cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << " , from front"  << endl;
             int deleted = train_station[sending]->deleteFront();
+            //Loop for when Delete Returns a negative Number
             train_station[receiving]->insertFront(deleted);  
             cout << "I am deleting from the front" <<endl; 
         }
