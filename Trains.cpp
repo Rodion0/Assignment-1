@@ -29,85 +29,75 @@ car::car()
 }
 
 
+
 // Methods for Doubly Linked List/Train  
 class train
 {
 public:
-    car * front; 
-    car * rear;
+    //car * front; 
+    //car * rear;  
+    car * dummy; 
     train * makeTrain(int numberofCars);
     void insertFront(int n);  
+    void insertRear(int n);
     int deleteFront();
     int deleteRear();
     int valueofTrain();
 };
 
-train * train::makeTrain(int numberofCars){ //Make Train when given number of cars
-    train * answer; 
-    if(numberofCars == 0){ //return dummy node 
-        answer->front = answer->rear;
-        return answer; 
-    }
-    else if(numberofCars == 1){
-        car * temp; 
-        temp ->data = 1; 
-        answer->front = temp; 
-        answer->rear = temp;
-        return answer;
-    }
-    else{
-        car * first;
-        first->data = 1; 
-        answer->front = first; 
-        answer->rear = first; 
-        for(int i = 2; i < numberofCars; i++){
-            car * filler; 
-            filler->data = i * i;
-            answer->rear = filler;
-        }
-        return answer;
-    }            
-
-}
 
 void train::insertFront(int n){
-    car * cars; 
-    cars->data = n;
-    cars->next = NULL;
-    cars->prev = front->next; 
-    front->next = cars;
-    front = cars;  
+    car * carro = new car();
+    carro->data = n;  
+    car * after = dummy->next;
+    carro->next = after->prev;
+    carro->prev = dummy->next; 
+    dummy->next = carro; 
+    after->prev = carro;  
+}
+
+void train::insertRear(int n){
+    car * carro = new car();
+    carro->data = n;  
+    car * before = dummy->prev;
+    carro->next = dummy->prev;
+    carro->prev = before->next; 
+    dummy->prev = carro; 
+    before->next = carro;          
 }
 
 int train::deleteFront(){
-    if(front == rear){
+    if(dummy->next == dummy->prev){
         return -1;
     } 
-    car * rip = front->next;
-    front->next = rip->next; 
-    if(front->next == NULL){
-        rear = front;
+    car * rip = dummy->next;
+    dummy->next = rip->next; 
+    if(dummy->next == NULL){
+       dummy->next = dummy-> prev = dummy;
+        return -1; 
     } 
     return rip->data; 
 }
 
 int train::deleteRear(){
-    if(front == rear){
+    if(dummy->next == dummy->prev){
         return -1;
     } 
-    car * rip = rear->prev;
-    rear->prev = rip->prev; 
-    if(front->next == NULL){
-        rear = front;
+    car * rip = dummy->prev;
+    dummy->prev = rip->prev; 
+    if(dummy->next == NULL){
+       dummy->next = dummy-> prev = dummy;
+        return -1; 
     } 
     return rip->data;
 }
 
 int train::valueofTrain(){
-    car * temp = front;
+    car * temp = new car;
+    temp = dummy->next;
     int value = 1;
     int counter = 1;
-    while(temp != rear){
+    while(temp != dummy){
         value = (temp->data * counter) + value;
         counter += 1;
         temp = temp->next; 
@@ -115,13 +105,26 @@ int train::valueofTrain(){
     return value;
 }
 
+train * train::makeTrain(int numberofCars){ //Make Train when given number of cars
+    train * answer = new train;   
+    answer->dummy->next = answer->dummy->prev = dummy;
+    if(numberofCars == 0){ //return dummy node 
+        return answer; 
+    }
+    else{
+        for (int i = 1; i <= numberofCars; i++){
+            answer->insertRear(i*i);
+        }
+        return answer;
+    }            
+}
 
 //Misc Methods
 
 //Dice Roll Method
 // Mode 1 is 2 sided dice 
 //Mode 2 is n sided dice
-int diceRoll(int mode, int range, int random_number){
+/* int diceRoll(int mode, int range, int random_number){
     int answer = 0;
     if(mode == 1){
         answer = (random_number % 2) +1;
@@ -131,7 +134,7 @@ int diceRoll(int mode, int range, int random_number){
         answer = (random_number % range) + 1;
         return answer;
     }
-}
+} */
 
 //Print Trains Mth
 void printTrains(train * trains[], int length){
@@ -161,12 +164,12 @@ int main(int argc, char const *argv[])
     cout << numberofTrains << " number of turns: " << turns << " number of cars: " << numberofCars <<endl; 
     cin >> big_random;
 
-    cout << big_random; 
+    //cout << big_random; 
 
     //Loop to fill up Trains with Cars 
     for (int i = 0; i < numberofTrains; i++){
         cout << "Hello There" <<endl; 
-        train_station[i]->makeTrain(numberofCars);
+        train_station[i]->makeTrain(numberofCars); 
         cout << "I am filling up the trains " << i << endl; 
     }
     
@@ -188,6 +191,11 @@ int main(int argc, char const *argv[])
         positon = (big_random % 2) + 1;
         sending = (big_random % numberofTrains) + 1; 
         receiving = (big_random % numberofTrains) + 1; 
+        if(sending == receiving){
+            printTrains(train_station,numberofTrains);
+            cin >> big_random;
+            continue; 
+        }
         if(positon == 1){
             cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << " , from front"  << endl;
             int deleted = train_station[sending]->deleteFront();
