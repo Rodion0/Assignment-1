@@ -11,6 +11,7 @@
 // FIX PRINTING 
 // ADD BOUNDRY CASES
 #include <iostream>
+#include <string>
 using namespace std; 
 
 
@@ -39,7 +40,7 @@ class train
 public:
     car * front; 
     car * rear;  
-    car * dummy; 
+    //car * dummy; 
     train();
     train * makeTrain(int numberofCars);
     void insertFront(int value);  
@@ -49,21 +50,23 @@ public:
     int valueofTrain();
 };
 
-train::train(){
-    dummy = new car();
-    front = rear = dummy;
-}
+/* train::train(){
+    //dummy = new car();
+    front = dummy; 
+    rear = dummy;
+} */
 
-void train::insertFront(int value){ //Problem is that dummy isnt pointing to anything but idk how to make point to something 
+void train::insertFront(int value){ 
     car * carro = new car(); 
     if(front == rear){
+        carro->data = value; 
         front = rear = carro; 
     }
     else{
         carro->data = value;
-        carro->prev = rear;
-        front->next = carro; 
-        rear = carro;
+        carro->next = front->next;
+        front->prev = carro; 
+        front = carro;
     } 
 }
 
@@ -84,7 +87,8 @@ int train::deleteFront(){
     if(front == rear){
         return -1;
     } 
-    car * rip = front->next;
+    car * rip = new car();
+    rip = front->next;
     front->next = rip->next;
     return rip->data; 
 }
@@ -93,7 +97,8 @@ int train::deleteRear(){
     if(front == rear){
         return -1;
     } 
-    car * rip = rear->prev;
+    car * rip = new car();
+    rip = rear->prev;
     rear->prev = rip->prev;
     return rip->data; 
 }
@@ -106,6 +111,7 @@ int train::valueofTrain(){
     while(temp != NULL){
         value = (temp->data * counter) + value;
         counter = counter + 1;
+        cout << "Value is: " << value << " Count is at "  << counter <<endl; 
         temp = temp->next; 
     }
     return value;
@@ -163,10 +169,11 @@ void printTrains(train * trains[], int length){
 int main(int argc, char const *argv[])
 {
     int big_random; 
-    int numberofTrains = stoi(argv[1]), turns = stoi(argv[2]), numberofCars = stoi(argv[3]);
+    int numberofTrains = stoi(argv[1]), numberofCars = stoi(argv[2]), turns = stoi(argv[3]);
     int sending, receiving, positon;
+    string random_number; 
     train * train_station[numberofTrains];
-    cout << numberofTrains << " number of turns: " << turns << " number of cars: " << numberofCars <<endl; 
+    cout << "Number of Trains: " << numberofTrains << " number of turns: " << turns << " number of cars: " << numberofCars <<endl; 
     cin >> big_random;
 
     //cout << big_random; 
@@ -181,26 +188,28 @@ int main(int argc, char const *argv[])
     for(int i = 1; i <= turns; i++){
         positon = (big_random % 2) + 1;
         sending = (big_random % numberofTrains) + 1; 
-        receiving = (big_random % numberofTrains) + 1; 
-        cout << "Position is " << positon << " Sending is " << sending << " Receving is " << receiving <<endl; 
+        cin >> big_random; 
+        receiving = (big_random % numberofTrains) + 2; 
+        //cout << "Position is " << positon << " Sending is " << sending << " Receving is " << receiving <<endl; 
         if(positon == 1){
-            cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << " , from front"  << endl;
+            cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << ", from front"  << endl;
             int deleted = train_station[sending]->deleteFront();
             //Loop for when Delete Returns a negative Number
             train_station[receiving]->insertFront(deleted);  
-            cout << "I am deleting from the front" <<endl; 
+            //cout << "I am deleting from the front" <<endl; 
         }
         if(positon == 2){
-            cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << " , from rear"  << endl;
+            cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << ", from end"  << endl;
             int deleted = train_station[sending]->deleteRear();
             train_station[receiving]->insertFront(deleted);
-            cout << "I am deleting from the rear" << endl; 
+            //cout << "I am deleting from the rear" << endl; 
         }
          
         printTrains(train_station,numberofTrains);
-
-        cin >> big_random;
-        cout << " I have done a turn" <<endl; 
+        cin.clear(); 
+        cin >> big_random; 
+        
+        //cout << " I have done a turn" <<endl; 
     }
 
     return 0;
