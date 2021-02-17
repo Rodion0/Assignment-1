@@ -59,14 +59,14 @@ train::train(int numCar){
 }
 
 void train::insertFront(int value){ 
-    car * carro = new car(); 
+    cout << "insertFront()" <<endl; 
+    car * carro = new car();  
+    carro->data = value;
     if(front == NULL && rear == NULL){
-        carro->data = value; 
         front = carro;
         rear = carro; 
     }
     else{
-        carro->data = value;
         carro->next = front->next;
         front->prev = carro; 
         front = carro;
@@ -74,13 +74,14 @@ void train::insertFront(int value){
 }
 
 void train::insertRear(int value){
-    car * carro = new car();   
+    cout << "insertRear()" <<endl; 
+    car * carro = new car(); 
+    carro->data = value;  
     if(front == NULL && rear == NULL){
         front = carro; 
         rear = carro; 
     }
     else{
-        carro->data = value;
         carro->prev = rear;
         rear->next = carro; 
         rear = carro;
@@ -88,18 +89,20 @@ void train::insertRear(int value){
 }
 
 int train::deleteFront(){ 
-    if(front == rear){
+    cout << "deleteFront()" << endl; 
+    if((front == NULL && rear == NULL) || (front == rear)){
         return -1;
     } 
     int data = front->data;
-    front= front->next;
+    front = front->next;
     delete front->prev;
     front->prev = NULL; 
     return data; 
 }
 
 int train::deleteRear(){
-    if(front == rear){
+    cout << "deleteRear()" << endl; 
+    if((front == NULL && rear == NULL) || (front == rear)){
         return -1;
     } 
     int data = rear->data; 
@@ -110,6 +113,7 @@ int train::deleteRear(){
 }
 
 int train::valueofTrain(){
+    cout << "Value of Train" << endl; 
     car * temp = new car(); 
     temp = front;
     int value = 1;
@@ -155,6 +159,7 @@ int train::valueofTrain(){
 
 //Print Trains Mth
 void printTrains(train * trains[], int length){
+    cout << "Print Trains" << endl; 
     for (int i = 1; i <= length; i++){ 
             if(trains[i-1]->valueofTrain() == 0){
                 for(int j = i; j <= length; j++){
@@ -174,7 +179,8 @@ void printTrains(train * trains[], int length){
 
 int main(int argc, char const *argv[])
 {
-    int big_random; 
+    int big_random = 0;  
+    int deleted = 0; 
     int numberofTrains = stoi(argv[1]), numberofCars = stoi(argv[2]), turns = stoi(argv[3]);
     int sending, receiving, positon;
     string random_number; 
@@ -190,23 +196,23 @@ int main(int argc, char const *argv[])
     }
 
     //For Loop to do switching/printing 
-    for(int i = 1; i <= turns; i++){
+    for(int i = 1; i <= turns || (deleted == -1); i++){
         positon = (big_random % 2) + 1;
         sending = (big_random % numberofTrains) + 1; 
         cin >> big_random; 
-        receiving = (big_random % numberofTrains) + 2; 
+        receiving = (big_random % numberofTrains) + 1; 
         //cout << "Position is " << positon << " Sending is " << sending << " Receving is " << receiving <<endl; 
         if(positon == 1){
             cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << ", from front"  << endl;
-            int deleted = train_station[sending]->deleteFront();
+            deleted = train_station[sending-1]->deleteFront();
             //Loop for when Delete Returns a negative Number
-            train_station[receiving]->insertFront(deleted);  
+            train_station[receiving-1]->insertFront(deleted);  
             //cout << "I am deleting from the front" <<endl; 
         }
         if(positon == 2){
             cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << ", from end"  << endl;
-            int deleted = train_station[sending]->deleteRear();
-            train_station[receiving]->insertFront(deleted);
+            deleted = train_station[sending-1]->deleteRear();
+            train_station[receiving-1]->insertFront(deleted);
             //cout << "I am deleting from the rear" << endl; 
         }
          
