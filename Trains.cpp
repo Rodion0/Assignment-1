@@ -4,19 +4,18 @@
 // Author: Justin Hamilton
 // Date: 2/12/2021
 // Description: Train Switching Simulation  
-// Assistance: I reviewed some code previously written for another course and class notes
+// Assistance: I reviewed some code previously written for another course,
+// class notes and tutoring from Tau Beta Pi
 //--------------------------------------------------------------------
 
-//TODO: FIX DELETE METHODS 
-// FIX PRINTING 
-// ADD BOUNDRY CASES
 #include <iostream>
+#include <iomanip>
 #include <string>
 using namespace std; 
 
 
-//Construtor for Nodes/Cars
 
+// Node/Car Class
 class car
 {
 public:
@@ -26,6 +25,9 @@ public:
     car * prev;
 };
 
+//--------------------------------------------------------------------------------------
+//                                      car()
+//--------------------------------------------------------------------------------------
 car::car()
 {
     data = 0; 
@@ -39,10 +41,8 @@ class train
 {
 public:
     car * front; 
-    car * rear;  
-    //car * dummy; 
+    car * rear;   
     train(int numCar);
-    //train * makeTrain(int numberofCars);
     void insertFront(int value);  
     void insertRear(int value);
     int deleteFront();
@@ -50,16 +50,27 @@ public:
     int valueofTrain();
 };
 
-train::train(int numCar){
+//--------------------------------------------------------------------------------------
+//                                      train()
+//--------------------------------------------------------------------------------------
+// Given: number of Cars
+// This Constructor fills a train with the given number of cars 
+//--------------------------------------------------------------------------------------
+train::train(int numCar){ 
     front = NULL; 
     rear = NULL;
-    for (int i = 1; i <= numCar; i++){
-        insertRear(i);
+    for (int iter = 1; iter <= numCar; iter++){ 
+        insertRear(iter);
     }
 }
 
-void train::insertFront(int value){ 
-    cout << "insertFront()" <<endl; 
+//--------------------------------------------------------------------------------------
+//                                      insertFront()
+//--------------------------------------------------------------------------------------
+// Given: some int 
+// Inserts car with given int at front of train
+//--------------------------------------------------------------------------------------
+void train::insertFront(int value){  
     car * carro = new car();  
     carro->data = value;
     if(front == NULL && rear == NULL){
@@ -67,14 +78,19 @@ void train::insertFront(int value){
         rear = carro; 
     }
     else{
-        carro->next = front->next;
+        carro->next = front;
         front->prev = carro; 
         front = carro;
     } 
 }
 
+//--------------------------------------------------------------------------------------
+//                                      insertRear()
+//--------------------------------------------------------------------------------------
+// Given: some int 
+// Inserts car with given int at rear of train
+//--------------------------------------------------------------------------------------
 void train::insertRear(int value){
-    cout << "insertRear()" <<endl; 
     car * carro = new car(); 
     carro->data = value;  
     if(front == NULL && rear == NULL){
@@ -88,8 +104,13 @@ void train::insertRear(int value){
     }
 }
 
+//--------------------------------------------------------------------------------------
+//                                      deleteFront()
+//--------------------------------------------------------------------------------------
+// Returns: value of deleted car 
+// Deletes front car and moves rest down one space
+//--------------------------------------------------------------------------------------
 int train::deleteFront(){ 
-    cout << "deleteFront()" << endl; 
     if((front == NULL && rear == NULL) || (front == rear)){
         return -1;
     } 
@@ -100,8 +121,13 @@ int train::deleteFront(){
     return data; 
 }
 
+//--------------------------------------------------------------------------------------
+//                                      deleteRear()
+//--------------------------------------------------------------------------------------
+// Returns: value of deleted car 
+// Deletes rear car and moves rest down one space
+//--------------------------------------------------------------------------------------
 int train::deleteRear(){
-    cout << "deleteRear()" << endl; 
     if((front == NULL && rear == NULL) || (front == rear)){
         return -1;
     } 
@@ -112,115 +138,91 @@ int train::deleteRear(){
     return data; 
 }
 
+//--------------------------------------------------------------------------------------
+//                                     valueofTrain()
+//--------------------------------------------------------------------------------------
+// Returns: Value of train
+// Calculates value of train by adding cars whose value is defined as data * position 
+//--------------------------------------------------------------------------------------
 int train::valueofTrain(){
-    cout << "Value of Train" << endl; 
     car * temp = new car(); 
     temp = front;
-    int value = 1;
+    int value = 0;
     int counter = 1;
     while(temp != NULL){
         value = (temp->data * counter) + value;
         counter = counter + 1;
-        //cout << "Value is: " << value << " Count is at "  << counter <<endl; 
         temp = temp->next; 
     }
     return value;
 }
 
-/* train * train::makeTrain(int numberofCars){ //Make Train when given number of cars
-    train * answer = new train();  
-    if(numberofCars == 0){ //return dummy node 
-        return answer; 
-    }
-    else{
-        for (int i = 1; i <= numberofCars; i++){
-            answer.insertRear(i);
+
+//--------------------------------------------------------------------------------------
+//                                      printTrains()
+//--------------------------------------------------------------------------------------
+// Given: train array, length of array
+// Returns: control int to tell whether or not any trains are empty  
+// Prints values of trains in a given train array 
+//--------------------------------------------------------------------------------------
+int printTrains(train * trains[], int length){
+    int deleted = 0; 
+    for(int iter = 1; iter <= length; iter ++){
+        if(trains[iter-1]->valueofTrain() == 0){
+            deleted = iter; 
         }
-        return answer;
-    }            
-} */
-
-//Misc Methods
-
-//Dice Roll Method
-// Mode 1 is 2 sided dice 
-//Mode 2 is n sided dice
-/* int diceRoll(int mode, int range, int random_number){
-    int answer = 0;
-    if(mode == 1){
-        answer = (random_number % 2) +1;
-        return answer; 
+        cout <<setw(13) << "train " << iter << ": value: " << trains[iter-1]->valueofTrain() <<endl;
     }
-    else{
-        answer = (random_number % range) + 1;
-        return answer;
+    if(deleted > 0){
+        cout << "Simulation is over; train " << deleted << " has no more cars left. " <<endl; 
     }
-} */
-
-//Print Trains Mth
-void printTrains(train * trains[], int length){
-    cout << "Print Trains" << endl; 
-    for (int i = 1; i <= length; i++){ 
-            if(trains[i-1]->valueofTrain() == 0){
-                for(int j = i; j <= length; j++){
-                     cout << "train " << i << " : value " << trains[j-1]->valueofTrain() <<endl;
-                }
-                cout << "Simulation is over; train " << i << " has no cars left." <<endl;
-                break;
-            }
-            cout << "train " << i << " : value " << trains[i-1]->valueofTrain() <<endl;
-        }
+    return deleted; 
 }
 
 
 
 
-//Main Method 
+//--------------------------------------------------------------------------------------
+//                                      main()
+//--------------------------------------------------------------------------------------
 
 int main(int argc, char const *argv[])
 {
-    int big_random = 0;  
-    int deleted = 0; 
-    int numberofTrains = stoi(argv[1]), numberofCars = stoi(argv[2]), turns = stoi(argv[3]);
-    int sending, receiving, positon;
-    string random_number; 
-    train * train_station[numberofTrains];
-    cout << "Number of Trains: " << numberofTrains << " number of turns: " << turns << " number of cars: " << numberofCars <<endl; 
+    int big_random = 0;  //Random number to be passed in
+    int deleted = 0; //Value of Deleted Car 
+    int numberofTrains = stoi(argv[1]), numberofCars = stoi(argv[2]), turns = stoi(argv[3]); //input parameters 
+    int sending, receiving; //Position of train sending car, position of train receiving,
+    int positon;  //control int for whether car is sent from front or back  
+    train * train_station[numberofTrains]; //Representation of Train Station 
     cin >> big_random;
 
-    //cout << big_random; 
-
     //Loop to fill up Trains with Cars 
-    for (int i = 0; i < numberofTrains; i++){
-        train_station[i] = new train(numberofCars);
+    for (int iter = 0; iter < numberofTrains; iter++){
+        train_station[iter] = new train(numberofCars);
     }
 
     //For Loop to do switching/printing 
-    for(int i = 1; i <= turns || (deleted == -1); i++){
+    for(int iter = 1; iter <= turns || (deleted == -1); iter++){
         positon = (big_random % 2) + 1;
         sending = (big_random % numberofTrains) + 1; 
         cin >> big_random; 
-        receiving = (big_random % numberofTrains) + 1; 
-        //cout << "Position is " << positon << " Sending is " << sending << " Receving is " << receiving <<endl; 
-        if(positon == 1){
-            cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << ", from front"  << endl;
+        receiving = (big_random % numberofTrains) + 1;  
+        if(positon == 1){ //Sent from the front 
+            cout << "turn " << iter << ":train " << sending << " sends a car to train " << receiving << ", from front"  << endl;
             deleted = train_station[sending-1]->deleteFront();
-            //Loop for when Delete Returns a negative Number
             train_station[receiving-1]->insertFront(deleted);  
-            //cout << "I am deleting from the front" <<endl; 
         }
-        if(positon == 2){
-            cout << "turn " << i << ": train " << sending << " sends a car to train " << receiving << ", from end"  << endl;
+        if(positon == 2){ // Sent from the back 
+            cout << "turn " << iter << ":train " << sending << " sends a car to train " << receiving << ", from end"  << endl;
             deleted = train_station[sending-1]->deleteRear();
             train_station[receiving-1]->insertFront(deleted);
-            //cout << "I am deleting from the rear" << endl; 
         }
          
-        printTrains(train_station,numberofTrains);
+        if(printTrains(train_station,numberofTrains) > 0 ){ //If any trains are empty 
+            break;
+        }
         cin.clear(); 
         cin >> big_random; 
-        
-        //cout << " I have done a turn" <<endl; 
     }
 
     return 0;
