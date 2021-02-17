@@ -41,8 +41,8 @@ public:
     car * front; 
     car * rear;  
     //car * dummy; 
-    train();
-    train * makeTrain(int numberofCars);
+    train(int numCar);
+    //train * makeTrain(int numberofCars);
     void insertFront(int value);  
     void insertRear(int value);
     int deleteFront();
@@ -50,17 +50,20 @@ public:
     int valueofTrain();
 };
 
-/* train::train(){
-    //dummy = new car();
-    front = dummy; 
-    rear = dummy;
-} */
+train::train(int numCar){
+    front = NULL; 
+    rear = NULL;
+    for (int i = 1; i <= numCar; i++){
+        insertRear(i);
+    }
+}
 
 void train::insertFront(int value){ 
     car * carro = new car(); 
     if(front == NULL && rear == NULL){
         carro->data = value; 
-        front = rear = carro; 
+        front = carro;
+        rear = carro; 
     }
     else{
         carro->data = value;
@@ -73,12 +76,13 @@ void train::insertFront(int value){
 void train::insertRear(int value){
     car * carro = new car();   
     if(front == NULL && rear == NULL){
-        front = rear = carro; 
+        front = carro; 
+        rear = carro; 
     }
     else{
         carro->data = value;
         carro->prev = rear;
-        front->next = carro; 
+        rear->next = carro; 
         rear = carro;
     }
 }
@@ -119,18 +123,18 @@ int train::valueofTrain(){
     return value;
 }
 
-train * train::makeTrain(int numberofCars){ //Make Train when given number of cars
-    train * answer;  
+/* train * train::makeTrain(int numberofCars){ //Make Train when given number of cars
+    train * answer = new train();  
     if(numberofCars == 0){ //return dummy node 
         return answer; 
     }
     else{
         for (int i = 1; i <= numberofCars; i++){
-            answer->insertRear(i);
+            answer.insertRear(i);
         }
         return answer;
     }            
-}
+} */
 
 //Misc Methods
 
@@ -182,7 +186,7 @@ int main(int argc, char const *argv[])
 
     //Loop to fill up Trains with Cars 
     for (int i = 0; i < numberofTrains; i++){
-        train_station[i] = train_station[i]->makeTrain(numberofCars); 
+        train_station[i] = new train(numberofCars);
     }
 
     //For Loop to do switching/printing 
